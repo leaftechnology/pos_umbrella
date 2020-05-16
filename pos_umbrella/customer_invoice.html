@@ -16,7 +16,11 @@
 
 <p class="text-center">
 	<b>{{ company }}</b><br>
-	{{ company_address_value }}
+	{% if company_address_value %}
+		<br>
+		{{ company_address_value }}
+	{% endif %}
+
 	{% if phone_number %}
 		<br>
 		TEL:{{ phone_number }}
