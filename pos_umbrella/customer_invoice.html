@@ -57,16 +57,16 @@
 				<b>{{ __("TOTAL") }}</b>
 			</td>
 			<td class="text-right">
-				{{ format_number(total, null,2) }}
+				<b>{{ format_number(total, null,2) }}</b>
 			</td>
 		</tr>
 		{% for tax in taxes %}
 			<tr>
 				<td class="text-left" style="width: 90%">
-					<b>{{ tax.description }}</b>
+					<b>{{  __("VAT")  }}</b>
 				</td>
 				<td class="text-right">
-					{{ format_number(tax.total) }}
+					<b>{{ format_number(tax.tax_amount, null,2) }}</b>
 				</td>
 			</tr>
 		{% endfor %}
@@ -75,7 +75,7 @@
 				<b>{{ __("GRAND TOTAL") }}</b>
 			</td>
 			<td class="text-right">
-				{{ format_number(total, null,2) }}
+				<b>{{ format_number(grand_total, null,2) }}</b>
 			</td>
 		</tr>
 	    <tr>
@@ -93,7 +93,7 @@
 				{{ format_number(outstanding_amount, null,2) }}
 			</td>
 		</tr>
-	<tr>
+		<tr>
 			<td class="text-left" style="width: 90%">
 				<b>{{ __("CHANGE") }}</b>
 			</td>
@@ -101,7 +101,7 @@
 				{{ format_number(change_amount, null,2) }}
 			</td>
 		</tr>
-	<tr>
+		<tr>
 			<td class="text-left" style="width: 90%">
 				<b>{{ __("DISCOUNT") }}</b>
 			</td>
@@ -109,7 +109,7 @@
 				{{ format_number(discount_amount, null,2) }}
 			</td>
 		</tr>
-	<tr>
+		<tr>
 			<td class="text-left" style="width: 90%">
 				<b>{{ __("WRITE OFF") }}</b>
 			</td>
