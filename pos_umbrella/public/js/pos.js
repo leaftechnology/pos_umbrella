@@ -1,9 +1,6 @@
 frappe.provide("erpnext.pos");
 
 erpnext.pos.PointOfSale.prototype.submit_invoice = function () {
-	this.frm.doc.test = "TEEEEST"
-	console.log(this.frm.doc.test)
-	console.log(this.frm.doc)
  	if(this.frm.doc.outstanding_amount === 0){
 		var me = this;
 		this.change_status();
@@ -45,7 +42,5 @@ erpnext.pos.PointOfSale.prototype.create_new = function () {
 				me.frm.doc.vat = r.message[1]
 			}
 		})
-	console.log(this.frm.doc)
-	console.log(me)
 }
 

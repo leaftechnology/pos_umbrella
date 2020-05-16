@@ -89,7 +89,9 @@
 			<td class="text-right">
 				{{ format_number(paid_amount, null,2) }}
 			</td>
-		</tr><tr>
+		</tr>
+		{% if outstanding_amount > 0 %}
+		<tr>
 			<td class="text-left" style="width: 90%">
 				<b>{{ __("OUTSTANDING") }} &nbsp ------------------------</b>
 			</td>
@@ -97,6 +99,9 @@
 				{{ format_number(outstanding_amount, null,2) }}
 			</td>
 		</tr>
+						{% endif %}
+
+		{% if change_amount > 0 %}
 		<tr>
 			<td class="text-left" style="width: 90%">
 				<b>{{ __("CHANGE") }} &nbsp ------------------------------</b>
@@ -105,6 +110,8 @@
 				{{ format_number(change_amount, null,2) }}
 			</td>
 		</tr>
+				{% endif %}
+
 		{% if discount_amount > 0 %}
 			<tr>
 				<td class="text-left" style="width: 90%">
