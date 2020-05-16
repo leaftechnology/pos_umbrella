@@ -58,7 +58,7 @@
 	<tbody>
 		<tr>
 			<td class="text-left" style="width: 90%">
-				<b>{{ __("TOTAL") }} &nbsp  ------------------------------ </b>
+				<b>{{ __("TOTAL") }} &nbsp  ------------------------- </b>
 			</td>
 			<td class="text-right">
 				<b>{{ format_number(total, null,2) }}</b>
@@ -67,7 +67,7 @@
 		{% for tax in taxes %}
 			<tr>
 				<td class="text-left" style="width: 90%">
-					<b>{{  __("VAT")  }} &nbsp  ------------------------------</b>
+					<b>{{  __("VAT")  }} &nbsp  -------------------------</b>
 				</td>
 				<td class="text-right">
 					<b>{{ format_number(tax.tax_amount, null,2) }}</b>
@@ -76,7 +76,7 @@
 		{% endfor %}
 		<tr>
 			<td class="text-left" style="width: 90%">
-				<b>{{ __("GRAND TOTAL") }} &nbsp -------------------------</b>
+				<b>{{ __("GRAND TOTAL") }} &nbsp --------------------</b>
 			</td>
 			<td class="text-right">
 				<b>{{ format_number(grand_total, null,2) }}</b>
@@ -84,7 +84,7 @@
 		</tr>
 	    <tr>
 			<td class="text-left" style="width: 90%">
-				<b>{{ __("PAID") }} &nbsp ------------------------------</b>
+				<b>{{ __("PAID") }} &nbsp -------------------------</b>
 			</td>
 			<td class="text-right">
 				{{ format_number(paid_amount, null,2) }}
@@ -93,7 +93,7 @@
 		{% if outstanding_amount > 0 %}
 		<tr>
 			<td class="text-left" style="width: 90%">
-				<b>{{ __("OUTSTANDING") }} &nbsp ------------------------</b>
+				<b>{{ __("OUTSTANDING") }} &nbsp -------------------</b>
 			</td>
 			<td class="text-right">
 				{{ format_number(outstanding_amount, null,2) }}
@@ -104,7 +104,7 @@
 		{% if change_amount > 0 %}
 		<tr>
 			<td class="text-left" style="width: 90%">
-				<b>{{ __("CHANGE") }} &nbsp ------------------------------</b>
+				<b>{{ __("CHANGE") }} &nbsp -------------------------</b>
 			</td>
 			<td class="text-right">
 				{{ format_number(change_amount, null,2) }}
@@ -115,7 +115,7 @@
 		{% if discount_amount > 0 %}
 			<tr>
 				<td class="text-left" style="width: 90%">
-					<b>{{ __("DISCOUNT") }} &nbsp ------------------------------</b>
+					<b>{{ __("DISCOUNT") }} &nbsp -------------------------</b>
 				</td>
 				<td class="text-right">
 					{{ format_number(discount_amount, null,2) }}
@@ -126,7 +126,7 @@
 
 				<tr>
 					<td class="text-left" style="width: 90%">
-						<b>{{ __("WRITE OFF") }} &nbsp ------------------------------</b>
+						<b>{{ __("WRITE OFF") }} &nbsp ------------------------</b>
 					</td>
 					<td class="text-right">
 						{{ format_number(write_off_amount, null,2) }}
