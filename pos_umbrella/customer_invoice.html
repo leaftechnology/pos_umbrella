@@ -1,0 +1,110 @@
+<style>
+	.print-format table, .print-format tr,
+	.print-format td, .print-format div, .print-format p {
+		font-family: Monospace !important;
+		line-height: 100% !important;
+		vertical-align: middle !important;
+	}
+	@media screen {
+		.print-format {
+			width: 4in !important;
+			padding: 0.10in !important;
+			min-height: 11.8in !important;
+		}
+	}
+</style>
+
+<p class="text-center">
+	{{ company }}<br>
+	{{ company_address }}
+	{% if phone_number %}
+		<br>
+		TEL:{{ phone_number }}
+	{% endif %}
+	{% if vat %}
+		<br>
+		<b>{{ vat }}</b>
+	{% endif %}
+
+
+<p>
+
+<table width="100%" style="border-top: 1px solid black">
+	<thead>
+		<tr>
+			<td width="20%">{{ __("SI") }}</td>
+			<td width="50%">{{ __("Name") }}</td>
+			<td width="15%" class="text-right">{{ __("Qty") }}</td>
+			<td width="15%" class="text-right">{{ __("Amount") }}</td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in items %}
+			<tr>
+				<td>{{ item.idx }}</td>
+				<td>{{ item.item_name }}</td>
+				<td class="text-right">{{ item.qty }}</td>
+				<td class="text-right">{{ format_number(item.amount, null,2) }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<table width="100%" style="border-top: 1px solid black">
+	<tbody>
+		<tr>
+			<td class="text-left" style="width: 90%">
+				<b>{{ __("TOTAL/") }}</b>
+			</td>
+			<td class="text-right">
+				{{ format_number(total, null,2) }}
+			</td>
+		</tr>
+		<tr>
+			<td class="text-left" style="width: 90%">
+				<b>{{ __("GRAND TOTAL/") }}</b>
+			</td>
+			<td class="text-right">
+				{{ format_number(total, null,2) }}
+			</td>
+		</tr>
+
+	</tbody>
+</table>
+<table width="100%"">
+	<tbody>
+	{% for payment in payments %}
+		<tr>
+			<td class="text-left" style="width: 90%">
+				<b>{{ payment.type }}</b>
+			</td>
+			<td class="text-right">
+				{{ format_number(payment.amount) }}
+			</td>
+		</tr>
+	{% endfor %}
+
+	</tbody>
+</table>
+<table width="100%" style="border-top: 1px solid black">
+	<tbody>
+		<tr>
+			<td class="text-left" style="width: 90%">
+				{{ __("TOTAL NO.OF ITEMS:/:") }}
+			</td>
+			<td class="text-right">
+				{{ items.length }}
+			</td>
+		</tr>
+		<tr>
+			<td class="text-left" style="width: 90%">
+				{{ posting_date }}
+			</td>
+			<td class="text-right">
+				{{ posting_time }}
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p>{{ terms }}</p>
+<p class="text-center">{{ __("Thank you, please visit again.") }}</p>

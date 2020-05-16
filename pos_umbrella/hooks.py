@@ -23,8 +23,10 @@ app_license = "MIT"
 # web_include_js = "/assets/pos_umbrella/js/pos_umbrella.js"
 
 # include js in page
-# page_js = {"page" : "public/js/file.js"}
-
+page_js = {
+    "pos": "public/js/pos.js",
+    "point-of-sale": "public/js/pos.js"
+}
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
@@ -79,13 +81,11 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"on_submit": "pos_umbrella.doc_events.sales_invoice.check_outstanding",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -127,3 +127,18 @@ app_license = "MIT"
 # 	"Task": "pos_umbrella.task.get_dashboard_data"
 # }
 
+
+fixtures = [
+    {
+        "doctype": "Print Format",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "Customer Invoice"
+                ]
+            ]
+        ]
+    }
+]
