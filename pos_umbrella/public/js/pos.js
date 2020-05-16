@@ -5,17 +5,17 @@ erpnext.pos.PointOfSale.prototype.submit_invoice = function () {
 	console.log(this.frm.doc.test)
 	console.log(this.frm.doc)
  	if(this.frm.doc.outstanding_amount === 0){
-			var me = this;
-			this.change_status();
-			this.update_serial_no()
-			if (this.frm.doc.docstatus) {
-				this.print_dialog()
-				// var html = frappe.render(me.print_template_data, me.frm.doc);
-				// me.print_document(html);
-			}
-		} else {
-			frappe.msgprint("Outstanding amount must be 0")
+		var me = this;
+		this.change_status();
+		this.update_serial_no()
+		if (this.frm.doc.docstatus) {
+			this.print_dialog()
+			// var html = frappe.render(me.print_template_data, me.frm.doc);
+			// me.print_document(html);
 		}
+	} else {
+		frappe.msgprint("Outstanding amount must be 0")
+	}
  }
 erpnext.pos.PointOfSale.prototype.create_new = function () {
 		var me = this;
@@ -31,9 +31,7 @@ erpnext.pos.PointOfSale.prototype.create_new = function () {
 			},
 			async: false,
 			callback: function (r) {
-				console.log("MESSAGE")
-				console.log(r.message)
-				me.frm.doc.company_address = r.message
+				me.frm.doc.company_address_value = r.message
 			}
 		})
 		frappe.call({

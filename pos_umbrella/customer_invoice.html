@@ -15,8 +15,8 @@
 </style>
 
 <p class="text-center">
-	{{ company }}<br>
-	{{ company_address }}
+	<b>{{ company }}</b><br>
+	{{ company_address_value }}
 	{% if phone_number %}
 		<br>
 		TEL:{{ phone_number }}
@@ -54,36 +54,69 @@
 	<tbody>
 		<tr>
 			<td class="text-left" style="width: 90%">
-				<b>{{ __("TOTAL/") }}</b>
+				<b>{{ __("TOTAL") }}</b>
 			</td>
 			<td class="text-right">
 				{{ format_number(total, null,2) }}
 			</td>
 		</tr>
+		{% for tax in taxes %}
+			<tr>
+				<td class="text-left" style="width: 90%">
+					<b>{{ tax.description }}</b>
+				</td>
+				<td class="text-right">
+					{{ format_number(tax.total) }}
+				</td>
+			</tr>
+		{% endfor %}
 		<tr>
 			<td class="text-left" style="width: 90%">
-				<b>{{ __("GRAND TOTAL/") }}</b>
+				<b>{{ __("GRAND TOTAL") }}</b>
 			</td>
 			<td class="text-right">
 				{{ format_number(total, null,2) }}
 			</td>
 		</tr>
-
-	</tbody>
-</table>
-<table width="100%"">
-	<tbody>
-	{% for payment in payments %}
-		<tr>
+	    <tr>
 			<td class="text-left" style="width: 90%">
-				<b>{{ payment.type }}</b>
+				<b>{{ __("PAID") }}</b>
 			</td>
 			<td class="text-right">
-				{{ format_number(payment.amount) }}
+				{{ format_number(paid_amount, null,2) }}
+			</td>
+		</tr><tr>
+			<td class="text-left" style="width: 90%">
+				<b>{{ __("OUTSTANDING") }}</b>
+			</td>
+			<td class="text-right">
+				{{ format_number(outstanding_amount, null,2) }}
 			</td>
 		</tr>
-	{% endfor %}
-
+	<tr>
+			<td class="text-left" style="width: 90%">
+				<b>{{ __("CHANGE") }}</b>
+			</td>
+			<td class="text-right">
+				{{ format_number(change_amount, null,2) }}
+			</td>
+		</tr>
+	<tr>
+			<td class="text-left" style="width: 90%">
+				<b>{{ __("DISCOUNT") }}</b>
+			</td>
+			<td class="text-right">
+				{{ format_number(discount_amount, null,2) }}
+			</td>
+		</tr>
+	<tr>
+			<td class="text-left" style="width: 90%">
+				<b>{{ __("WRITE OFF") }}</b>
+			</td>
+			<td class="text-right">
+				{{ format_number(write_off_amount, null,2) }}
+			</td>
+		</tr>
 	</tbody>
 </table>
 <table width="100%" style="border-top: 1px solid black">
