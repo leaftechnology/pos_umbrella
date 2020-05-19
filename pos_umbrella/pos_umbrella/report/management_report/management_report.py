@@ -9,16 +9,19 @@ def execute(filters=None):
 
 	columns.append({"fieldname": "si_invoice", "label": "SI Invoice", "fieldtype": "Data", "width": 170})
 	columns.append({"fieldname": "posting_date", "label": "Posting Date", "fieldtype": "Data", "width": 170})
+	columns.append({"fieldname": "loyalty", "label": "Loyalty", "fieldtype": "Data", "width": 100})
 	columns.append({"fieldname": "item_code", "label": "Item Code", "fieldtype": "Data", "width": 150})
 	columns.append({"fieldname": "item_name", "label": "Item Name", "fieldtype": "Data", "width": 200})
+	columns.append({"fieldname": "qty", "label": "Qty", "fieldtype": "Data", "width": 80})
 	columns.append({"fieldname": "valuation_rate", "label": "Valuation Rate", "fieldtype": "Data", "width": 130})
 	columns.append({"fieldname": "selling_amount", "label": "Selling Amount", "fieldtype": "Float", "precision": "2", "width": 130})
 	columns.append({"fieldname": "buying_amount", "label": "Buying Amount", "fieldtype": "Float", "precision": "2", "width": 130})
+	columns.append({"fieldname": "discount_amount", "label": "Discount", "fieldtype": "Float", "precision": "2", "width": 130})
 
 	columns.append({"fieldname": "net_profit", "label": "Net Profit", "fieldtype": "Float", "precision": "2", "width": 130})
 	columns.append({"fieldname": "vat", "label": "VAT", "fieldtype": "Data", "width": 100})
 	columns.append({"fieldname": "gross_profit", "label": "Gross Profit", "fieldtype": "Float", "precision": "2", "width": 130})
-	columns.append({"fieldname": "gross_profit_perentage", "label": "Gross Profit %", "fieldtype": "Percent", "width": 130})
+	columns.append({"fieldname": "gross_profit_percentage", "label": "Gross Profit %", "fieldtype": "Data", "width": 130})
 
 	from_date = filters.get("from_date")
 	to_date = filters.get("to_date")
@@ -30,6 +33,7 @@ def execute(filters=None):
 		obj = {
 			"si_invoice": i.name,
 			"posting_date": i.posting_date,
+			"loyalty": i.loyalty_amount,
 		}
 
 		sales_invoice_items = frappe.db.sql(""" SELECT * FROM `tabSales Invoice Item` WHERE parent=%s """, i.name, as_dict=1)
@@ -39,20 +43,23 @@ def execute(filters=None):
 
 			if idx != 0:
 				obj = {}
-			selling_amount = selling[0].price_list_rate if len(selling) > 0 else 0
-			buying_amount =  valuation_rate[0].valuation_rate if len(valuation_rate) > 0 else selling_amount
+			buying_amount =  valuation_rate[0].valuation_rate if len(valuation_rate) > 0 else ii.rate
 			obj['item_code'] = ii.item_code
 			obj['item_name'] = ii.item_name
+			obj['qty'] = ii.qty
 			obj['valuation_rate'] = valuation_rate[0].valuation_rate
 			obj['buying_amount'] = buying_amount
-			obj['selling_amount'] = selling_amount
+			obj['selling_amount'] = ii.rate
+			obj['discount_amount'] = ii.discount_amount
 			obj['vat'] = i.total_taxes_and_charges
-			obj['net_profit'] = (selling_amount - buying_amount) * ii.qty
-			obj['gross_profit'] = (selling_amount - buying_amount) * ii.qty
-			if selling_amount > 0:
-				obj['gross_profit_percentage'] = (((selling_amount - buying_amount) * ii.qty) / selling_amount ) * 100
+			obj['net_profit'] = (ii.rate - buying_amount) * ii.qty
+			obj['gross_profit'] = (ii.rate - buying_amount) * ii.qty
+			if ii.rate > 0:
+				print("NAA MAN")
+				print(round((((ii.rate - buying_amount) * ii.qty) / ii.rate ) * 100))
+				obj['gross_profit_percentage'] = str(round((((ii.rate - buying_amount) * ii.qty) / ii.rate ) * 100,2)) + "%"
 			else:
-				obj['gross_profit_percentage'] = 0
+				obj['gross_profit_percentage'] = "0%"
 
 			data.append(obj)
 
