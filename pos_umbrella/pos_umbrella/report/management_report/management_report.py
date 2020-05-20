@@ -7,7 +7,7 @@ import frappe
 def execute(filters=None):
 	columns, data = [], []
 
-	columns.append({"fieldname": "si_invoice", "label": "SI Invoice", "fieldtype": "Data", "width": 170})
+	columns.append({"fieldname": "si_invoice", "label": "SI Invoice", "fieldtype": "Link", "width": 170, "options": "Sales Invoice"})
 	columns.append({"fieldname": "posting_date", "label": "Posting Date", "fieldtype": "Data", "width": 170})
 	columns.append({"fieldname": "loyalty", "label": "Loyalty", "fieldtype": "Data", "width": 100})
 	columns.append({"fieldname": "item_code", "label": "Item Code", "fieldtype": "Data", "width": 150})
@@ -26,8 +26,14 @@ def execute(filters=None):
 	from_date = filters.get("from_date")
 	to_date = filters.get("to_date")
 	pos_profile = filters.get("pos_profile")
+	warehouse = filters.get("warehouse")
 
-	sales_invoices = frappe.db.sql(""" SELECT * FROM `tabSales Invoice` WHERE posting_date BETWEEN %s and %s and pos_profile=%s""",(from_date,to_date,pos_profile), as_dict=1)
+	condition = ""
+
+	if warehouse:
+		condition += " and set_warehouse='{0}'".format(warehouse)
+	query = """ SELECT * FROM `tabSales Invoice` WHERE posting_date BETWEEN '{0}' and '{1}' and pos_profile='{2}' {3}""".format(from_date,to_date,pos_profile,condition)
+	sales_invoices = frappe.db.sql(query, as_dict=1)
 
 	for i in sales_invoices:
 		obj = {
