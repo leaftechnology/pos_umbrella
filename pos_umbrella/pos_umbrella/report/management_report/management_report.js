@@ -21,14 +21,13 @@ frappe.query_reports["Management Report"] = {
 			"fieldname": "pos_profile",
 			"label": __("POS Profile"),
 			"fieldtype": "Link",
-			"options": "POS Profile",
-			"reqd": 1
+			"options": "POS Profile"
 		},
 		{
 			"fieldname": "warehouse",
 			"label": __("Warehouse"),
 			"fieldtype": "Link",
-			"options": "Warehouse",
+			"options": "Warehouse"
 
 		}
 	]
