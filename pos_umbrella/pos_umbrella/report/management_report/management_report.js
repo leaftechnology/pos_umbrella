@@ -20,15 +20,24 @@ frappe.query_reports["Management Report"] = {
 		{
 			"fieldname": "pos_profile",
 			"label": __("POS Profile"),
-			"fieldtype": "Link",
-			"options": "POS Profile"
+			"fieldtype": "MultiSelectList",
+			get_data: function(txt) {
+				if (!frappe.query_report.filters) return;
+
+				return frappe.db.get_link_options("POS Profile")
+
+			}
 		},
 		{
 			"fieldname": "warehouse",
 			"label": __("Warehouse"),
-			"fieldtype": "Link",
-			"options": "Warehouse"
+			"fieldtype": "MultiSelectList",
+			get_data: function(txt) {
+				if (!frappe.query_report.filters) return;
 
+				return frappe.db.get_link_options("Warehouse")
+
+			}
 		}
 	]
 };

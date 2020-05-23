@@ -31,10 +31,24 @@ def execute(filters=None):
 	condition = ""
 
 	if warehouse:
-		condition += " and set_warehouse='{0}'".format(warehouse)
+		for idx, warehouse1 in enumerate(warehouse):
+			if idx == 0:
+				condition += " and "
+			else:
+				condition += " or "
+			condition += " set_warehouse='{0}' ".format(warehouse1)
+
 
 	if pos_profile:
-		condition += " and pos_profile='{0}'".format(pos_profile)
+		for idx, pos in enumerate(pos_profile):
+			if idx == 0:
+				condition += " and "
+			else:
+				condition += " or "
+			condition += " pos_profile='{0}' ".format(pos)
+
+	if condition:
+		condition += " ORDER BY pos_profile ASC"
 
 	query = """ SELECT * FROM `tabSales Invoice` WHERE posting_date BETWEEN '{0}' and '{1}' {2}""".format(from_date,to_date,condition)
 	sales_invoices = frappe.db.sql(query, as_dict=1)
