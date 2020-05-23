@@ -20,13 +20,8 @@ frappe.query_reports["EOD Report"] = {
 		{
 			"fieldname": "pos_profile",
 			"label": __("POS Profile"),
-			"fieldtype": "MultiSelectList",
-			get_data: function(txt) {
-				if (!frappe.query_report.filters) return;
-
-				return frappe.db.get_link_options("POS Profile")
-
-			}
+			"fieldtype": "Link",
+			"options": "POS Profile"
 		}
 	]
 };

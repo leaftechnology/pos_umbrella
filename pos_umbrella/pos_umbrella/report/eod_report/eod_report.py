@@ -23,17 +23,9 @@ def execute(filters=None):
 		columns.append({"fieldname": "vat", "label": "VAT", "fieldtype": "Data", "width": 100})
 		columns.append({"fieldname": "gross_sale", "label": "Gross Sale", "fieldtype": "Data", "width": 100})
 		condition = ""
-		print("POS PROFILE")
-		print(pos_profile)
-		if pos_profile:
-			for idx, pos in enumerate(pos_profile):
-				if idx == 0:
-					condition += " and "
-				else:
-					condition += " or "
-				condition += " pos_profile='{0}' ".format(pos)
 
-			condition += " ORDER BY pos_profile ASC"
+		if pos_profile:
+			condition += " and pos_profile='{0}' ".format(pos_profile)
 
 		query = """ SELECT * FROM `tabSales Invoice` 
 				WHERE docstatus=1 and posting_date BETWEEN '{0}' and '{1}' {2}""".format(from_date, to_date,condition)
