@@ -8,6 +8,7 @@ def execute(filters=None):
 	columns, data = [], []
 
 	columns.append({"fieldname": "si_invoice", "label": "SI Invoice", "fieldtype": "Link", "width": 170, "options": "Sales Invoice"})
+	columns.append({"fieldname": "store_name", "label": "Store Name", "fieldtype": "Link", "width": 170, "options": "Sales Invoice"})
 	columns.append({"fieldname": "posting_date", "label": "Posting Date", "fieldtype": "Data", "width": 170})
 	columns.append({"fieldname": "loyalty", "label": "Loyalty", "fieldtype": "Data", "width": 100})
 	columns.append({"fieldname": "item_code", "label": "Item Code", "fieldtype": "Data", "width": 150})
@@ -56,6 +57,7 @@ def execute(filters=None):
 	for i in sales_invoices:
 		obj = {
 			"si_invoice": i.name,
+			"store_name": i.pos_profile,
 			"posting_date": i.posting_date,
 			"loyalty": i.loyalty_amount,
 		}
