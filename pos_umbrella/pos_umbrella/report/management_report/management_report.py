@@ -36,7 +36,7 @@ def execute(filters=None):
 	if pos_profile:
 		condition += " and pos_profile='{0}'".format(pos_profile)
 
-	query = """ SELECT * FROM `tabSales Invoice` WHERE posting_date BETWEEN '{0}' and '{1}' {2}""".format(from_date,to_date,pos_profile,condition)
+	query = """ SELECT * FROM `tabSales Invoice` WHERE posting_date BETWEEN '{0}' and '{1}' {2}""".format(from_date,to_date,condition)
 	sales_invoices = frappe.db.sql(query, as_dict=1)
 
 	for i in sales_invoices:

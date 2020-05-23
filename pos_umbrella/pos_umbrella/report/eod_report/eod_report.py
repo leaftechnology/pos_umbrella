@@ -22,9 +22,12 @@ def execute(filters=None):
 		columns.append({"fieldname": "net_sale", "label": "Net Sale", "fieldtype": "Data", "width": 100})
 		columns.append({"fieldname": "vat", "label": "VAT", "fieldtype": "Data", "width": 100})
 		columns.append({"fieldname": "gross_sale", "label": "Gross Sale", "fieldtype": "Data", "width": 100})
+		condition = ""
+		if pos_profile:
+			condition += " and pos_profile='{0}' ".format(pos_profile)
 
 		query = """ SELECT * FROM `tabSales Invoice` 
-				WHERE docstatus=1 and posting_date BETWEEN '{0}' and '{1}' and pos_profile = '{2}'""".format(from_date, to_date,pos_profile)
+				WHERE docstatus=1 and posting_date BETWEEN '{0}' and '{1}' '{2}'""".format(from_date, to_date,condition)
 		print(query)
 		sales_invoices = frappe.db.sql(query, as_dict=True)
 
