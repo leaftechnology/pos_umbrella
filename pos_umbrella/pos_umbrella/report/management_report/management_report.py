@@ -60,6 +60,7 @@ def execute(filters=None):
 			"posting_date": i.posting_date,
 			"loyalty": i.loyalty_amount,
 			"vat": i.total_taxes_and_charges,
+			"discount_amount": i.discount_amount,
 		}
 
 		sales_invoice_items = frappe.db.sql(""" SELECT * FROM `tabSales Invoice Item` WHERE parent=%s """, i.name, as_dict=1)
@@ -76,7 +77,6 @@ def execute(filters=None):
 			obj['valuation_rate'] = valuation_rate[0].valuation_rate
 			obj['buying_amount'] = buying_amount
 			obj['selling_amount'] = ii.amount
-			obj['discount_amount'] = ii.discount_amount
 			obj['net_profit'] = (ii.amount - buying_amount) * ii.qty
 			obj['gross_profit'] = (ii.amount - buying_amount) * ii.qty
 			if ii.amount > 0:
