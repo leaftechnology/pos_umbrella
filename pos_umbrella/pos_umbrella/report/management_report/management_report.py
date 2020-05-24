@@ -6,9 +6,8 @@ import frappe
 
 def execute(filters=None):
 	columns, data = [], []
-
-	columns.append({"fieldname": "si_invoice", "label": "SI Invoice", "fieldtype": "Link", "width": 170, "options": "Sales Invoice"})
 	columns.append({"fieldname": "store_name", "label": "Store Name", "fieldtype": "Link", "width": 170, "options": "Sales Invoice"})
+	columns.append({"fieldname": "si_invoice", "label": "SI Invoice", "fieldtype": "Link", "width": 170, "options": "Sales Invoice"})
 	columns.append({"fieldname": "posting_date", "label": "Posting Date", "fieldtype": "Data", "width": 170})
 	columns.append({"fieldname": "loyalty", "label": "Loyalty", "fieldtype": "Data", "width": 100})
 	columns.append({"fieldname": "item_code", "label": "Item Code", "fieldtype": "Data", "width": 150})
@@ -69,21 +68,21 @@ def execute(filters=None):
 
 			if idx != 0:
 				obj = {}
-			buying_amount =  valuation_rate[0].valuation_rate if len(valuation_rate) > 0 else ii.rate
+			buying_amount =  valuation_rate[0].valuation_rate if len(valuation_rate) > 0 else ii.amount
 			obj['item_code'] = ii.item_code
 			obj['item_name'] = ii.item_name
 			obj['qty'] = ii.qty
 			obj['valuation_rate'] = valuation_rate[0].valuation_rate
 			obj['buying_amount'] = buying_amount
-			obj['selling_amount'] = ii.rate
+			obj['selling_amount'] = ii.amount
 			obj['discount_amount'] = ii.discount_amount
 			obj['vat'] = i.total_taxes_and_charges
-			obj['net_profit'] = (ii.rate - buying_amount) * ii.qty
-			obj['gross_profit'] = (ii.rate - buying_amount) * ii.qty
-			if ii.rate > 0:
+			obj['net_profit'] = (ii.amount - buying_amount) * ii.qty
+			obj['gross_profit'] = (ii.amount - buying_amount) * ii.qty
+			if ii.amount > 0:
 				print("NAA MAN")
-				print(round((((ii.rate - buying_amount) * ii.qty) / ii.rate ) * 100))
-				obj['gross_profit_percentage'] = str(round((((ii.rate - buying_amount) * ii.qty) / ii.rate ) * 100,2)) + "%"
+				print(round((((ii.amount - buying_amount) * ii.qty) / ii.amount ) * 100))
+				obj['gross_profit_percentage'] = str(round((((ii.amount - buying_amount) * ii.qty) / ii.amount ) * 100,2)) + "%"
 			else:
 				obj['gross_profit_percentage'] = "0%"
 
