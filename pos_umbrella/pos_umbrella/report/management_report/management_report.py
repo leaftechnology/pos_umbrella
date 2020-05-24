@@ -11,13 +11,14 @@ def execute(filters=None):
 	columns.append({"fieldname": "posting_date", "label": "Posting Date", "fieldtype": "Data", "width": 170})
 	columns.append({"fieldname": "loyalty", "label": "Loyalty", "fieldtype": "Data", "width": 100})
 	columns.append({"fieldname": "vat", "label": "VAT", "fieldtype": "Float", "width": 100, "precision": "3"})
+	columns.append({"fieldname": "discount_amount", "label": "Discount", "fieldtype": "Float", "precision": "3", "width": 130})
+
 	columns.append({"fieldname": "item_code", "label": "Item Code", "fieldtype": "Data", "width": 150})
 	columns.append({"fieldname": "item_name", "label": "Item Name", "fieldtype": "Data", "width": 200})
 	columns.append({"fieldname": "qty", "label": "Qty", "fieldtype": "Data", "width": 80})
 	columns.append({"fieldname": "valuation_rate", "label": "Valuation Rate", "fieldtype": "Data", "width": 130})
 	columns.append({"fieldname": "selling_amount", "label": "Selling Amount", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "buying_amount", "label": "Buying Amount", "fieldtype": "Float", "precision": "3", "width": 130})
-	columns.append({"fieldname": "discount_amount", "label": "Discount", "fieldtype": "Float", "precision": "3", "width": 130})
 
 	columns.append({"fieldname": "net_profit", "label": "Net Profit", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "gross_profit", "label": "Gross Profit", "fieldtype": "Float", "precision": "3", "width": 130})
