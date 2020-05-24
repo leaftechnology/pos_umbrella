@@ -78,12 +78,10 @@ def execute(filters=None):
 			obj['valuation_rate'] = valuation_rate[0].valuation_rate
 			obj['buying_amount'] = buying_amount
 			obj['selling_amount'] = ii.amount
-			obj['net_profit'] = (ii.amount - buying_amount) * ii.qty
-			obj['gross_profit'] = ((ii.amount - buying_amount) * ii.qty) + i.total_taxes_and_charges
+			obj['net_profit'] = (ii.amount - buying_amount)
+			obj['gross_profit'] = (ii.amount - buying_amount) + i.total_taxes_and_charges
 			if ii.amount > 0:
-				print("NAA MAN")
-				print(round((((ii.amount - buying_amount) * ii.qty) / ii.amount ) * 100))
-				obj['gross_profit_percentage'] = str(round((((ii.amount - buying_amount) * ii.qty) / ii.amount ) * 100,2)) + "%"
+				obj['gross_profit_percentage'] = str(round(((ii.amount - buying_amount) / ii.amount ) * 100,2)) + "%"
 			else:
 				obj['gross_profit_percentage'] = "0%"
 
