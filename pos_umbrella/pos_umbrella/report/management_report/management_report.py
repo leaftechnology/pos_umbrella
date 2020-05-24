@@ -10,6 +10,7 @@ def execute(filters=None):
 	columns.append({"fieldname": "si_invoice", "label": "SI Invoice", "fieldtype": "Link", "width": 170, "options": "Sales Invoice"})
 	columns.append({"fieldname": "posting_date", "label": "Posting Date", "fieldtype": "Data", "width": 170})
 	columns.append({"fieldname": "loyalty", "label": "Loyalty", "fieldtype": "Data", "width": 100})
+	columns.append({"fieldname": "vat", "label": "VAT", "fieldtype": "Float", "width": 100, "precision": "3"})
 	columns.append({"fieldname": "item_code", "label": "Item Code", "fieldtype": "Data", "width": 150})
 	columns.append({"fieldname": "item_name", "label": "Item Name", "fieldtype": "Data", "width": 200})
 	columns.append({"fieldname": "qty", "label": "Qty", "fieldtype": "Data", "width": 80})
@@ -19,7 +20,6 @@ def execute(filters=None):
 	columns.append({"fieldname": "discount_amount", "label": "Discount", "fieldtype": "Float", "precision": "3", "width": 130})
 
 	columns.append({"fieldname": "net_profit", "label": "Net Profit", "fieldtype": "Float", "precision": "3", "width": 130})
-	columns.append({"fieldname": "vat", "label": "VAT", "fieldtype": "Float", "width": 100, "precision": "3"})
 	columns.append({"fieldname": "gross_profit", "label": "Gross Profit", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "gross_profit_percentage", "label": "Gross Profit %", "fieldtype": "Data", "width": 130})
 
@@ -78,7 +78,7 @@ def execute(filters=None):
 			obj['buying_amount'] = buying_amount
 			obj['selling_amount'] = ii.amount
 			obj['net_profit'] = (ii.amount - buying_amount) * ii.qty
-			obj['gross_profit'] = (ii.amount - buying_amount) * ii.qty
+			obj['gross_profit'] = ((ii.amount - buying_amount) * ii.qty) + i.total_taxes_and_charges
 			if ii.amount > 0:
 				print("NAA MAN")
 				print(round((((ii.amount - buying_amount) * ii.qty) / ii.amount ) * 100))
