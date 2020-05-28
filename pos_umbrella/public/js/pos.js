@@ -60,30 +60,45 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 		  }
 	  });
  }
- function loyalty_program(me){
+ function loyalty_program(me, number = "", use_points= false, points=0){
 	frappe.prompt([
-	{'fieldname': 'number', 'fieldtype': 'Data', 'label': 'Mobile Number'},
-	{'fieldname': 'use_points', 'fieldtype': 'Check', 'label': 'Use Points'},
-	{'fieldname': 'points', 'fieldtype': 'Data', 'label': 'Points', "depends_on": "eval: doc.use_points == 1"}
+	{'fieldname': 'number', 'fieldtype': 'Data', 'label': 'Mobile Number', 'default': number},
+	{'fieldname': 'use_points', 'fieldtype': 'Check', 'label': 'Use Points', 'default': use_points},
+	{'fieldname': 'points', 'fieldtype': 'Data', 'label': 'Points', "depends_on": "eval: doc.use_points == 1",  'default': points}
 		],
 	function(values){
-		validate_mobile_number(values, me);
+		if (values.number) {
+			validate_mobile_number(values, me);
+		} else {
+
+			me.update_paid_amount_status(true);
+			me.create_invoice();
+			me.make_payment();
+		}
 	},
 	'Please Enter Mobile Number For Loyalty',
 	'Add or Proceed'
 	);
  }
  function validate_mobile_number(values, me){
-	if(values.number){
-		me.frm.doc.loyalty_values = values;
-		me.update_paid_amount_status(true);
-		me.create_invoice();
-		me.make_payment();
+ 	if(values.number[0] === "0"){
+		frappe.model.get_value('POS Settings', {'name': 'POS Settings'}, 'allowed_mobile_number_length',
+		function(d) {
+		  if(values.number.length >= d.allowed_mobile_number_length){
+			me.frm.doc.loyalty_values = values;
+			me.update_paid_amount_status(true);
+			me.create_invoice();
+			me.make_payment();
+		  } else {
+			  frappe.msgprint("Minimum Allowed Mobile Number Length is " + d.allowed_mobile_number_length)
+			  loyalty_program(me, values.number, values.use_points, values.points)
+		  }
+		});
 	} else {
-		me.update_paid_amount_status(true);
-		me.create_invoice();
-		me.make_payment();
-	}
+		frappe.msgprint("Number must start with 0")
+		loyalty_program(me,values.number,values.use_points,values.points)
+			}
+
  }
 
  erpnext.pos.PointOfSale.prototype.submit_invoice = function () {

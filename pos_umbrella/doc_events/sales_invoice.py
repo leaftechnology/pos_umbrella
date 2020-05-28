@@ -3,6 +3,8 @@ import frappe
 
 @frappe.whitelist()
 def before_insert_si(doc, method):
+    if doc.is_pos:
+        doc.outstanding_amount = 0
     print("DOOOOOCCCCCCC")
     try:
         if "loyalty_values" in doc.__dict__:

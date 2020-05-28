@@ -149,7 +149,8 @@ fixtures = [
                 "in",
                 [
                     "POS Profile-default_loyalty_program",
-                    "POS Settings-loyalty_program"
+                    "POS Settings-loyalty_program",
+                    "POS Settings-allowed_mobile_number_length"
                 ]
             ]
         ]
