@@ -1,11 +1,110 @@
 frappe.provide("erpnext.pos");
 
-erpnext.pos.PointOfSale.prototype.submit_invoice = function () {
+erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
+ 	var me = this;
+		$(this.numeric_keypad).find('.pos-operation').on('click', function(){
+			me.numeric_val = '';
+		})
+
+		$(this.numeric_keypad).find('.numeric-keypad').on('click', function(){
+			me.numeric_id = $(this).attr("id") || me.numeric_id;
+			me.val = $(this).attr("val")
+			if(me.numeric_id) {
+				me.selected_field = $(me.wrapper).find('.selected-item').find('.' + me.numeric_id)
+			}
+
+			if(me.val && me.numeric_id) {
+				me.numeric_val += me.val;
+				me.selected_field.val(flt(me.numeric_val))
+				me.selected_field.trigger("change")
+				// me.render_selected_item()
+			}
+
+			if(me.numeric_id && $(this).hasClass('pos-operation')) {
+				me.numeric_keypad.find('button.pos-operation').removeClass('active');
+				$(this).addClass('active');
+
+				me.selected_row.find('.pos-list-row').removeClass('active');
+				me.selected_field.closest('.pos-list-row').addClass('active');
+			}
+		})
+
+		$(this.numeric_keypad).find('.numeric-del').click(function(){
+			if(me.numeric_id) {
+				me.selected_field = $(me.wrapper).find('.selected-item').find('.' + me.numeric_id)
+				me.numeric_val = cstr(flt(me.selected_field.val())).slice(0, -1);
+				me.selected_field.val(me.numeric_val);
+				me.selected_field.trigger("change")
+			} else {
+				//Remove an item from the cart, if focus is at selected item
+				me.remove_selected_item()
+			}
+		})
+
+		$(this.numeric_keypad).find('.pos-pay').click(function(){
+			me.validate();
+            console.log(me)
+
+			validate_loyalty_program(me)
+		})
+ }
+ function validate_loyalty_program(me){
+	frappe.model.get_value('POS Settings', {'name': 'POS Settings'}, 'loyalty_program',
+	  function(d) {
+		  if(d.loyalty_program === "1"){
+			loyalty_program(me);
+		  } else {
+			me.update_paid_amount_status(true);
+			me.create_invoice();
+			me.make_payment();
+		  }
+	  });
+ }
+ function loyalty_program(me){
+	frappe.prompt([
+	{'fieldname': 'number', 'fieldtype': 'Data', 'label': 'Mobile Number'},
+	{'fieldname': 'use_points', 'fieldtype': 'Check', 'label': 'Use Points'},
+	{'fieldname': 'points', 'fieldtype': 'Data', 'label': 'Points', "depends_on": "eval: doc.use_points == 1"}
+		],
+	function(values){
+		validate_mobile_number(values, me);
+	},
+	'Please Enter Mobile Number For Loyalty',
+	'Add or Proceed'
+	);
+ }
+ function validate_mobile_number(values, me){
+	if(values.number){
+		me.frm.doc.loyalty_values = values;
+		me.update_paid_amount_status(true);
+		me.create_invoice();
+		me.make_payment();
+	} else {
+		me.update_paid_amount_status(true);
+		me.create_invoice();
+		me.make_payment();
+	}
+ }
+
+ erpnext.pos.PointOfSale.prototype.submit_invoice = function () {
  	if(this.frm.doc.outstanding_amount === 0){
 		var me = this;
 		this.change_status();
 		this.update_serial_no()
 		if (this.frm.doc.docstatus) {
+		    frappe.call({
+                method: "pos_umbrella.get_data.update_mobile_number",
+                args: {
+                    "number": me.frm.doc.loyalty_values.number,
+                    "use_points": me.frm.doc.loyalty_values.use_points,
+                    "points": me.frm.doc.loyalty_values.points ? me.frm.doc.loyalty_values.points : 0,
+                    "loyalty_program": me.pos_profile_data.default_loyalty_program,
+                    "grand_total": me.frm.doc.grand_total
+
+                },
+                async: false,
+                callback: function (r) {}
+            })
 			this.print_dialog()
 			// var html = frappe.render(me.print_template_data, me.frm.doc);
 			// me.print_document(html);

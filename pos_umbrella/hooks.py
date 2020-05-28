@@ -83,7 +83,7 @@ page_js = {
 
 doc_events = {
 	"Sales Invoice": {
-		"on_submit": "pos_umbrella.doc_events.sales_invoice.check_outstanding",
+		"before_insert": "pos_umbrella.doc_events.sales_invoice.before_insert_si",
 	}
 }
 
@@ -137,6 +137,19 @@ fixtures = [
                 "in",
                 [
                     "Customer Invoice"
+                ]
+            ]
+        ]
+    },
+    {
+        "doctype": "Custom Field",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "POS Profile-default_loyalty_program",
+                    "POS Settings-loyalty_program"
                 ]
             ]
         ]
