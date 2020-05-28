@@ -33,6 +33,11 @@ def update_mobile_number(number,use_points,points,loyalty_program, grand_total):
             frappe.db.sql(""" UPDATE `tabMobile Numbers` SET balance=%s WHERE name=%s""", (points, number))
             frappe.db.commit()
     else:
+        if not frappe.db.exists("Mobile Numbers", number):
+            frappe.get_doc({
+                "doctype": "Mobile Numbers",
+                "mobile_number": number
+            }).insert(ignore_permissions=1)
         mobile_number = frappe.db.sql(""" SELECT * FROM `tabMobile Numbers` WHERE name=%s """,number, as_dict=1)
         diff = int(mobile_number[0].balance) - int(points)
 
