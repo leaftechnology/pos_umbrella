@@ -113,7 +113,7 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
                     "number": me.frm.doc.loyalty_values.number,
                     "use_points": me.frm.doc.loyalty_values.use_points,
                     "points": me.frm.doc.loyalty_values.points ? me.frm.doc.loyalty_values.points : 0,
-                    "loyalty_program": me.pos_profile_data.default_loyalty_program,
+                    "loyalty_program": me.pos_profile_data.name,
                     "grand_total": me.frm.doc.grand_total
 
                 },
