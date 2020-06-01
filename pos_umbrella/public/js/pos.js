@@ -107,19 +107,24 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 		this.change_status();
 		this.update_serial_no()
 		if (this.frm.doc.docstatus) {
-		    frappe.call({
-                method: "pos_umbrella.get_data.update_mobile_number",
-                args: {
-                    "number": me.frm.doc.loyalty_values.number,
-                    "use_points": me.frm.doc.loyalty_values.use_points,
-                    "points": me.frm.doc.loyalty_values.points ? me.frm.doc.loyalty_values.points : 0,
-                    "loyalty_program": me.pos_profile_data.name,
-                    "grand_total": me.frm.doc.grand_total
+			if(me.frm.doc.loyalty_values.number){
+				frappe.call({
+					method: "pos_umbrella.get_data.update_mobile_number",
+					args: {
+						"number": me.frm.doc.loyalty_values.number,
+						"use_points": me.frm.doc.loyalty_values.use_points,
+						"points": me.frm.doc.loyalty_values.points ? me.frm.doc.loyalty_values.points : 0,
+						"loyalty_program": me.pos_profile_data.name,
+						"grand_total": me.frm.doc.grand_total
 
-                },
-                async: false,
-                callback: function (r) {}
-            })
+					},
+					async: false,
+					callback: function (r) {
+
+					}
+				})
+			}
+
 			this.print_dialog()
 			// var html = frappe.render(me.print_template_data, me.frm.doc);
 			// me.print_document(html);
@@ -129,7 +134,9 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 	}
  }
 erpnext.pos.PointOfSale.prototype.create_new = function () {
+
 		var me = this;
+		me.sync_sales_invoice();
 		this.frm = {}
 		this.load_data(true);
 		this.frm.doc.offline_pos_name = '';
