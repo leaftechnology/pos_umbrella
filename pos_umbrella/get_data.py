@@ -18,7 +18,7 @@ def get_phone_number(company):
 
 @frappe.whitelist()
 def update_mobile_number(number,use_points,points,loyalty_program, grand_total):
-    if use_points == '0':
+    if use_points == '0' or use_points == "false":
         if not frappe.db.exists("Mobile Numbers", number):
             customer = create_customer(number)
             frappe.get_doc({
@@ -31,7 +31,7 @@ def update_mobile_number(number,use_points,points,loyalty_program, grand_total):
         loyalty_program_collection = frappe.db.sql(""" SELECT * FROM `tabLoyalty Program Collection` WHERE parent=%s """,(loyalty_program_record[0].default_loyalty_program),as_dict=1)
         if len(loyalty_program_collection) > 0:
             points = int(float(grand_total) / float(loyalty_program_collection[0].collection_factor))
-            frappe.db.sql(""" UPDATE `tabMobile Numbers` SET balance=%s WHERE name=%s""", (points, number))
+            frappe.db.sql(""" UPDATE `tabMobile Numbers` SET balance = balance + %s WHERE name=%s""", (points, number))
             frappe.db.commit()
 
             return frappe.db.sql(""" SELECT * FROM `tabMobile Numbers` WHERE name=%s """,(number),as_dict=1)[0].customer

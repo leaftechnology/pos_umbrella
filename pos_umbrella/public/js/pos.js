@@ -1,5 +1,18 @@
 frappe.provide("erpnext.pos");
 
+erpnext.payments.prototype.set_payment_primary_action = function () {
+	var me = this;
+	this.dialog.set_primary_action(__("Submit and Print"), function() {
+		// Allow no ZERO payment
+		$.each(me.frm.doc.payments, function (index, data) {
+			if (data.amount != 0) {
+				me.dialog.hide();
+				me.submit_invoice();
+				return;
+			}
+		});
+	})
+}
 erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
  	var me = this;
 		$(this.numeric_keypad).find('.pos-operation').on('click', function(){
@@ -60,17 +73,20 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 		  }
 	  });
  }
- function loyalty_program(me, number = "", use_points= false, points=0){
-	frappe.prompt([
-	{'fieldname': 'number', 'fieldtype': 'Data', 'label': 'Mobile Number', 'default': number},
-	{'fieldname': 'use_points', 'fieldtype': 'Check', 'label': 'Use Points', 'default': use_points},
-	{'fieldname': 'points', 'fieldtype': 'Data', 'label': 'Points', "depends_on": "eval: doc.use_points == 1",  'default': points}
-		],
+ function loyalty_program(me, number = "", use_points= false, points=0, current_points = 0){
+
+	var prompt = frappe.prompt([
+		{'fieldname': 'number', 'fieldtype': 'Data', 'label': 'Mobile Number', 'default': number},
+		{'fieldname': 'get_points', 'fieldtype': 'Button', 'label': "Get Points"},
+		{'fieldname': 'current_points','fieldtype': 'Int', 'label': 'Current Points', "default": current_points, "read_only": "1"},
+		{'fieldname': 'use_points', 'fieldtype': 'Check', 'label': 'Use Points', 'default': use_points, "depends_on": "eval: doc.current_points > 0"},
+		{'fieldname': 'points', 'fieldtype': 'Data', 'label': 'Points', "depends_on": "eval: doc.use_points == 1",  'default': points}
+	],
 	function(values){
 		if (values.number) {
 			validate_mobile_number(values, me);
 		} else {
-
+			me.frm.doc.loyalty_values = {}
 			me.update_paid_amount_status(true);
 			me.create_invoice();
 			me.make_payment();
@@ -79,7 +95,35 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 	'Please Enter Mobile Number For Loyalty',
 	'Add or Proceed'
 	);
+	prompt.fields_dict.get_points.$input.click(function() {
+		if(prompt.fields_dict.number.$input.val()){
+			frappe.call({
+			method: "frappe.client.get",
+			args: {
+				"doctype": "Mobile Numbers",
+				"name": prompt.fields_dict.number.$input.val()
+
+			},
+			callback: function (r) {
+				if(r.message && r.message.balance > 0){
+					prompt.hide();
+					var number = prompt.fields_dict.number.$input.val();
+					var points = prompt.fields_dict.points.$input.val();
+					loyalty_program(me, number, false, points, r.message.balance);
+				} else {
+					frappe.msgprint("Current balance is 0")
+
+				}
+
+            }
+		});
+		} else {
+			frappe.msgprint("Input valid number")
+		}
+
+	})
  }
+
  function validate_mobile_number(values, me){
  	if(values.number[0] === "0"){
 		frappe.model.get_value('POS Settings', {'name': 'POS Settings'}, 'allowed_mobile_number_length',
@@ -102,32 +146,32 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
  }
 
  erpnext.pos.PointOfSale.prototype.submit_invoice = function () {
- 	if(this.frm.doc.outstanding_amount === 0){
+ 	if (this.frm.doc.outstanding_amount === 0){
 		var me = this;
 		this.change_status();
 		this.update_serial_no()
 		if (this.frm.doc.docstatus) {
-			if(me.frm.doc.loyalty_values.number){
+			console.log("VALIUUUES")
+			console.log(me.frm.doc.loyalty_values)
+			if(me.frm.doc.loyalty_values && me.frm.doc.loyalty_values.number){
 				frappe.call({
 					method: "pos_umbrella.get_data.update_mobile_number",
 					args: {
 						"number": me.frm.doc.loyalty_values.number,
-						"use_points": me.frm.doc.loyalty_values.use_points,
+						"use_points": me.frm.doc.loyalty_values.use_points ? me.frm.doc.loyalty_values.use_points : false,
 						"points": me.frm.doc.loyalty_values.points ? me.frm.doc.loyalty_values.points : 0,
 						"loyalty_program": me.pos_profile_data.name,
 						"grand_total": me.frm.doc.grand_total
 
 					},
 					async: false,
-					callback: function (r) {
-
-					}
+					callback: function (r) {}
 				})
 			}
 
-			this.print_dialog()
-			// var html = frappe.render(me.print_template_data, me.frm.doc);
-			// me.print_document(html);
+			// this.print_dialog()
+			var html = frappe.render(me.print_template_data, me.frm.doc);
+			me.print_document(html);
 		}
 	} else {
 		frappe.msgprint("Outstanding amount must be 0")

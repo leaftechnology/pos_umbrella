@@ -20,9 +20,12 @@ def before_insert_si(doc, method):
                     frappe.db.commit()
                     doc.customer = customer[0].name
 
-                if doc.__dict__['loyalty_values']['use_points']:
+                if "use_points" in doc.__dict__['loyalty_values'] and doc.__dict__['loyalty_values']['use_points']:
+                    loyalty_program_record = frappe.db.sql(""" SELECT * FROM `tabLoyalty Program` WHERE name= %s""", (loyalty_program[0].default_loyalty_program), as_dict=1)
                     doc.redeem_loyalty_points = 1
-                    doc.loyalty_points = doc.__dict__['loyalty_values']['points']
+                    doc.loyalty_points = int(doc.__dict__['loyalty_values']['points'])
+                    doc.loyalty_redemption_account = loyalty_program_record[0].expense_account
+                    doc.loyalty_redemption_cost_center = loyalty_program_record[0].cost_center
 
             else:
                 loyalty_program = frappe.db.sql(""" SELECT * FROM `tabPOS Profile` WHERE name=%s """, doc.pos_profile,as_dict=1)
