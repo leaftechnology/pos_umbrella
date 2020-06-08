@@ -150,6 +150,7 @@ fixtures = [
                 [
                     "POS Profile-default_loyalty_program",
                     "POS Settings-loyalty_program",
+                    "POS Settings-enable_submit_and_print",
                     "POS Settings-allowed_mobile_number_length"
                 ]
             ]
