@@ -10,8 +10,7 @@ def before_insert_si(doc, method):
 
     try:
         if "loyalty_values" in doc.__dict__:
-            print(doc.__dict__['loyalty_values']['number'])
-            if doc.__dict__['loyalty_values']['number']:
+            if "number" in doc.__dict__['loyalty_values'] and doc.__dict__['loyalty_values']['number']:
                 loyalty_program = frappe.db.sql(""" SELECT * FROM `tabPOS Profile` WHERE name=%s """,doc.pos_profile, as_dict=1)
                 customer = frappe.db.sql(""" SELECT * FROM `tabCustomer` WHERE mobile_no=%s """,doc.__dict__['loyalty_values']['number'], as_dict=1)
 

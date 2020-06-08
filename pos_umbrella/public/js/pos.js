@@ -1,8 +1,9 @@
 frappe.provide("erpnext.pos");
-
+var enable_submit_and_print = 0
 erpnext.payments.prototype.set_payment_primary_action = function () {
-	var me = this;
-	this.dialog.set_primary_action(__("Submit and Print"), function() {
+	var me = this
+  if(enable_submit_and_print === "1"){
+		this.dialog.set_primary_action(__("Submit and Print"), function() {
 		// Allow no ZERO payment
 		$.each(me.frm.doc.payments, function (index, data) {
 			if (data.amount != 0) {
@@ -12,6 +13,19 @@ erpnext.payments.prototype.set_payment_primary_action = function () {
 			}
 		});
 	})
+  } else {
+		this.dialog.set_primary_action(__("Submit"), function() {
+			// Allow no ZERO payment
+			$.each(me.frm.doc.payments, function (index, data) {
+				if (data.amount != 0) {
+					me.dialog.hide();
+					me.submit_invoice();
+					return;
+				}
+			});
+		})
+  }
+
 }
 erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
  	var me = this;
@@ -57,7 +71,6 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 		$(this.numeric_keypad).find('.pos-pay').click(function(){
 			me.validate();
             console.log(me)
-
 			validate_loyalty_program(me)
 		})
  }
@@ -150,9 +163,7 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 		var me = this;
 		this.change_status();
 		this.update_serial_no()
-		if (this.frm.doc.docstatus) {
-			console.log("VALIUUUES")
-			console.log(me.frm.doc.loyalty_values)
+		if (this.frm.doc.docstatus === 1) {
 			if(me.frm.doc.loyalty_values && me.frm.doc.loyalty_values.number){
 				frappe.call({
 					method: "pos_umbrella.get_data.update_mobile_number",
@@ -168,19 +179,73 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 					callback: function (r) {}
 				})
 			}
+			if(enable_submit_and_print === "1"){
+				// this.create_new()
 
-			// this.print_dialog()
-			var html = frappe.render(me.print_template_data, me.frm.doc);
-			me.print_document(html);
+				var html = frappe.render(me.print_template_data, me.frm.doc);
+				me.print_document(html);
+			  } else {
+				this.print_dialog()
+			  }
+
 		}
 	} else {
 		frappe.msgprint("Outstanding amount must be 0")
 	}
  }
-erpnext.pos.PointOfSale.prototype.create_new = function () {
+erpnext.pos.PointOfSale.prototype.make_menu_list = function () {
+	var me = this;
+	this.page.clear_menu();
 
+	// for mobile
+	this.page.add_menu_item(__("Pay"), function () {
+		me.validate();
+		me.update_paid_amount_status(true);
+		me.create_invoice();
+		me.make_payment();
+	}).addClass('visible-xs');
+
+	this.page.add_menu_item(__("New Sales Invoice"), function () {
+		me.save_previous_entry();
+		me.create_new();
+	})
+
+	this.page.add_menu_item(__("Sync Master Data"), function () {
+		me.get_data_from_server(function () {
+			me.load_data(false);
+			me.make_item_list();
+			me.set_missing_values();
+		})
+	});
+
+	this.page.add_menu_item(__("Sync Offline Invoices"), function () {
+		me.freeze_screen = true;
+		me.sync_sales_invoice()
+	});
+
+	this.page.add_menu_item(__("Cashier Closing"), function () {
+		frappe.set_route('List', 'Cashier Closing');
+	});
+
+	this.page.add_menu_item(__("POS Profile"), function () {
+		frappe.set_route('List', 'POS Profile');
+	});
+	this.page.add_menu_item(__("Reset"), function () {
+		try {
+			localStorage.setItem('sales_invoice_doc', JSON.stringify([]));
+			frappe.msgprint("Reset Done")
+		} catch (e) {
+			frappe.throw(__("LocalStorage is full , did not save"))
+		}
+	});
+},
+
+erpnext.pos.PointOfSale.prototype.create_new = function () {
+		frappe.model.get_value('POS Settings', {'name': 'POS Settings'}, 'enable_submit_and_print',
+		  function(d) {
+			  enable_submit_and_print = d.enable_submit_and_print
+		  });
 		var me = this;
-		me.sync_sales_invoice();
 		this.frm = {}
 		this.load_data(true);
 		this.frm.doc.offline_pos_name = '';
