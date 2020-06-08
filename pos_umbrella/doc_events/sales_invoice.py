@@ -37,3 +37,18 @@ def before_insert_si(doc, method):
     except:
         frappe.log_error(frappe.get_traceback(), "Sales Invoice Creation Failed")
 
+@frappe.whitelist()
+def validate_si(doc, method):
+
+    if doc.redeem_loyalty_points and doc.loyalty_points > 0 and doc.loyalty_amount > 0:
+        pass
+
+@frappe.whitelist()
+def after_submit_si(doc, method):
+
+    if doc.redeem_loyalty_points and doc.loyalty_points > 0 and doc.loyalty_amount > 0:
+        grand_total = doc.grand_total - doc.loyalty_amount
+        frappe.db.set_value("Sales Invoice", doc.name, "grand_total", grand_total)
+        frappe.db.set_value("Sales Invoice", doc.name, "outstanding_amount", 0)
+
+

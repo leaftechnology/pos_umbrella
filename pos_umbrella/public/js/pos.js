@@ -110,6 +110,7 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 	);
 	prompt.fields_dict.get_points.$input.click(function() {
 		if(prompt.fields_dict.number.$input.val()){
+
 			frappe.call({
 			method: "frappe.client.get",
 			args: {
@@ -143,9 +144,29 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 		function(d) {
 		  if(values.number.length >= d.allowed_mobile_number_length){
 			me.frm.doc.loyalty_values = values;
+
 			me.update_paid_amount_status(true);
+			if(values.use_points && parseInt(values.points) > 0){
+				console.log("POINTS")
+				console.log(values.points)
+				console.log(me.frm.doc.grand_total)
+				console.log(me.frm.doc.paid_amount)
+				me.frm.doc.base_net_total = me.frm.doc.base_net_total - parseInt(values.points)
+				me.frm.doc.base_grand_total = me.frm.doc.base_grand_total - parseInt(values.points)
+				me.frm.doc.base_paid_amount = me.frm.doc.base_paid_amount - parseInt(values.points)
+				me.frm.doc.base_total = me.frm.doc.base_total - parseInt(values.points)
+				me.frm.doc.net_total = me.frm.doc.net_total - parseInt(values.points)
+				me.frm.doc.total = me.frm.doc.total - parseInt(values.points)
+				me.frm.doc.grand_total = me.frm.doc.grand_total - parseInt(values.points)
+				me.frm.doc.paid_amount = me.frm.doc.paid_amount - parseInt(values.points)
+				me.frm.doc.payments[0].amount = me.frm.doc.payments[0].amount - parseInt(values.points)
+				me.frm.doc.payments[0].base_amount = me.frm.doc.payments[0].base_amount - parseInt(values.points)
+				me.frm.doc.outstanding = 0
+			}
 			me.create_invoice();
 			me.make_payment();
+			console.log(values.use_points)
+
 		  } else {
 			  frappe.msgprint("Minimum Allowed Mobile Number Length is " + d.allowed_mobile_number_length)
 			  loyalty_program(me, values.number, values.use_points, values.points)

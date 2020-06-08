@@ -84,6 +84,8 @@ page_js = {
 doc_events = {
 	"Sales Invoice": {
 		"before_insert": "pos_umbrella.doc_events.sales_invoice.before_insert_si",
+		"validate": "pos_umbrella.doc_events.sales_invoice.validate_si",
+		"after_submit": "pos_umbrella.doc_events.sales_invoice.on_submit_si",
 	}
 }
 
