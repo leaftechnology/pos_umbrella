@@ -147,10 +147,6 @@ erpnext.pos.PointOfSale.prototype.bind_numeric_keypad = function () {
 
 			me.update_paid_amount_status(true);
 			if(values.use_points && parseInt(values.points) > 0){
-				console.log("POINTS")
-				console.log(values.points)
-				console.log(me.frm.doc.grand_total)
-				console.log(me.frm.doc.paid_amount)
 				me.frm.doc.base_net_total = me.frm.doc.base_net_total - parseInt(values.points)
 				me.frm.doc.base_grand_total = me.frm.doc.base_grand_total - parseInt(values.points)
 				me.frm.doc.base_paid_amount = me.frm.doc.base_paid_amount - parseInt(values.points)
