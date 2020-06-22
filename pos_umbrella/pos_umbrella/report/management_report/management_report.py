@@ -64,6 +64,7 @@ def execute(filters=None):
 	sales_invoices = frappe.db.sql(query, as_dict=1)
 
 	for i in sales_invoices:
+		total_qty = get_totalqty(i.name)
 		obj = {
 			"si_invoice": i.name,
 			"store_name": i.pos_profile,
@@ -87,10 +88,10 @@ def execute(filters=None):
 			obj['valuation_rate'] = valuation_rate[0].valuation_rate
 			obj['buying_amount'] = ii.qty * valuation_rate[0].valuation_rate
 			obj['selling_amount'] = ii.amount
-			obj['net_profit'] = (ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount)
+			obj['net_profit'] = (ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount) / total_qty
 			obj['gross_profit'] = (ii.amount - buying_amount) + i.total_taxes_and_charges
 			if ii.amount > 0:
-				obj['net_profit_percentage'] = str(round(((ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount) / ii.amount) * 100,2)) + "%"
+				obj['net_profit_percentage'] = str(round(((ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount) / total_qty) /  ii.amount  * 100,2)) + "%"
 
 				obj['gross_profit_percentage'] = str(round(((ii.amount - buying_amount) / ii.amount ) * 100,2)) + "%"
 			else:
@@ -101,3 +102,11 @@ def execute(filters=None):
 
 
 	return columns, data
+
+def get_totalqty(name):
+	total = 0
+	sales_invoice_items = frappe.db.sql(""" SELECT * FROM `tabSales Invoice Item` WHERE parent=%s """, name,
+										as_dict=1)
+	for i in sales_invoice_items:
+		total += i.qty
+	return total
