@@ -55,7 +55,7 @@ def execute(filters=None):
 				condition += " and "
 			else:
 				condition += " or "
-			condition += " cost_center='{0}' ".format(cost_center)
+			condition += ' cost_center="{0}" '.format(cost_center)
 
 	if condition:
 		condition += " ORDER BY pos_profile ASC"
