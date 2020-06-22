@@ -21,7 +21,7 @@ def execute(filters=None):
 	columns.append({"fieldname": "buying_amount", "label": "Buying Amount", "fieldtype": "Float", "precision": "3", "width": 130})
 
 	columns.append({"fieldname": "net_profit", "label": "Net Profit", "fieldtype": "Float", "precision": "3", "width": 130})
-	columns.append({"fieldname": "net_profit_percentage", "label": "Net Profit %", "fieldtype": "Float", "precision": "3", "width": 130})
+	columns.append({"fieldname": "net_profit_percentage", "label": "Net Profit %", "fieldtype": "Data", "width": 130})
 	columns.append({"fieldname": "gross_profit", "label": "Gross Profit", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "gross_profit_percentage", "label": "Gross Profit %", "fieldtype": "Data", "width": 130})
 
@@ -50,12 +50,12 @@ def execute(filters=None):
 				condition += " or "
 			condition += " pos_profile='{0}' ".format(pos)
 	if cost_center:
-		for idx, pos in enumerate(cost_center):
+		for idx, cc in enumerate(cost_center):
 			if idx == 0:
 				condition += " and "
 			else:
 				condition += " or "
-			condition += ' cost_center="{0}" '.format(cost_center)
+			condition += 'cost_center="{0}" '.format(cc)
 
 	if condition:
 		condition += " ORDER BY pos_profile ASC"
