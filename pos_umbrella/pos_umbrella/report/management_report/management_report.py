@@ -50,7 +50,12 @@ def execute(filters=None):
 				condition += " or "
 			condition += " pos_profile='{0}' ".format(pos)
 	if cost_center:
-		condition += " and cost_center='{0}' ".format(cost_center)
+		for idx, pos in enumerate(cost_center):
+			if idx == 0:
+				condition += " and "
+			else:
+				condition += " or "
+			condition += " cost_center='{0}' ".format(cost_center)
 
 	if condition:
 		condition += " ORDER BY pos_profile ASC"
@@ -83,12 +88,14 @@ def execute(filters=None):
 			obj['buying_amount'] = ii.qty * valuation_rate[0].valuation_rate
 			obj['selling_amount'] = ii.amount
 			obj['net_profit'] = (ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount)
-			obj['net_profit_percentage'] = ((ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount) / ii.amount) * 100
 			obj['gross_profit'] = (ii.amount - buying_amount) + i.total_taxes_and_charges
 			if ii.amount > 0:
+				obj['net_profit_percentage'] = str(round(((ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount) / ii.amount) * 100,2)) + "%"
+
 				obj['gross_profit_percentage'] = str(round(((ii.amount - buying_amount) / ii.amount ) * 100,2)) + "%"
 			else:
 				obj['gross_profit_percentage'] = "0%"
+				obj['net_profit_percentage'] = "0%"
 
 			data.append(obj)
 

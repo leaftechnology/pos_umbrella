@@ -42,8 +42,12 @@ frappe.query_reports["Management Report"] = {
 		{
 			"fieldname": "cost_center",
 			"label": __("Cost Center"),
-			"fieldtype": "Link",
-			"options": "Cost Center"
+			"fieldtype": "MultiSelectList",
+			get_data: function(txt) {
+				if (!frappe.query_report.filters) return;
+				return frappe.db.get_link_options("Cost Center")
+
+			}
 		}
 	]
 };
