@@ -38,6 +38,12 @@ frappe.query_reports["Management Report"] = {
 				return frappe.db.get_link_options("Warehouse")
 
 			}
+		},
+		{
+			"fieldname": "cost_center",
+			"label": __("Cost Center"),
+			"fieldtype": "Link",
+			"options": "Cost Center"
 		}
 	]
 };

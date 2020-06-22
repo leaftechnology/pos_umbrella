@@ -21,6 +21,7 @@ def execute(filters=None):
 	columns.append({"fieldname": "buying_amount", "label": "Buying Amount", "fieldtype": "Float", "precision": "3", "width": 130})
 
 	columns.append({"fieldname": "net_profit", "label": "Net Profit", "fieldtype": "Float", "precision": "3", "width": 130})
+	columns.append({"fieldname": "net_profit_percentage", "label": "Net Profit Percentage", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "gross_profit", "label": "Gross Profit", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "gross_profit_percentage", "label": "Gross Profit %", "fieldtype": "Data", "width": 130})
 
@@ -28,6 +29,7 @@ def execute(filters=None):
 	to_date = filters.get("to_date")
 	pos_profile = filters.get("pos_profile")
 	warehouse = filters.get("warehouse")
+	cost_center = filters.get("cost_center")
 
 	condition = ""
 
@@ -47,6 +49,8 @@ def execute(filters=None):
 			else:
 				condition += " or "
 			condition += " pos_profile='{0}' ".format(pos)
+	if cost_center:
+		condition += " and cost_center='{0}' ".format(cost_center)
 
 	if condition:
 		condition += " ORDER BY pos_profile ASC"
@@ -78,7 +82,8 @@ def execute(filters=None):
 			obj['valuation_rate'] = valuation_rate[0].valuation_rate
 			obj['buying_amount'] = ii.qty * valuation_rate[0].valuation_rate
 			obj['selling_amount'] = ii.amount
-			obj['net_profit'] = (ii.amount - buying_amount)
+			obj['net_profit'] = (ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount)
+			obj['net_profit_percentage'] = ((ii.amount - buying_amount - i.discount_amount - i.total_taxes_and_charges - i.loyalty_amount) / ii.amount) * 100
 			obj['gross_profit'] = (ii.amount - buying_amount) + i.total_taxes_and_charges
 			if ii.amount > 0:
 				obj['gross_profit_percentage'] = str(round(((ii.amount - buying_amount) / ii.amount ) * 100,2)) + "%"
