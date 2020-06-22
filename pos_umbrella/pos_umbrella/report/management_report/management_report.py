@@ -21,7 +21,7 @@ def execute(filters=None):
 	columns.append({"fieldname": "buying_amount", "label": "Buying Amount", "fieldtype": "Float", "precision": "3", "width": 130})
 
 	columns.append({"fieldname": "net_profit", "label": "Net Profit", "fieldtype": "Float", "precision": "3", "width": 130})
-	columns.append({"fieldname": "net_profit_percentage", "label": "Net Profit Percentage", "fieldtype": "Float", "precision": "3", "width": 130})
+	columns.append({"fieldname": "net_profit_percentage", "label": "Net Profit %", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "gross_profit", "label": "Gross Profit", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "gross_profit_percentage", "label": "Gross Profit %", "fieldtype": "Data", "width": 130})
 
