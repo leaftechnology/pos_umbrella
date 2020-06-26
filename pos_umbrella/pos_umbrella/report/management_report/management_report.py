@@ -22,8 +22,8 @@ def execute(filters=None):
 
 	columns.append({"fieldname": "net_profit", "label": "Net Profit", "fieldtype": "Float", "precision": "3", "width": 130})
 	columns.append({"fieldname": "net_profit_percentage", "label": "Net Profit %", "fieldtype": "Data", "width": 130})
-	columns.append({"fieldname": "gross_profit", "label": "Gross Profit", "fieldtype": "Float", "precision": "3", "width": 130})
-	columns.append({"fieldname": "gross_profit_percentage", "label": "Gross Profit %", "fieldtype": "Data", "width": 130})
+	# columns.append({"fieldname": "gross_profit", "label": "Gross Profit", "fieldtype": "Float", "precision": "3", "width": 130})
+	# columns.append({"fieldname": "gross_profit_percentage", "label": "Gross Profit %", "fieldtype": "Data", "width": 130})
 
 	from_date = filters.get("from_date")
 	to_date = filters.get("to_date")
@@ -88,14 +88,13 @@ def execute(filters=None):
 			obj['valuation_rate'] = valuation_rate[0].valuation_rate
 			obj['buying_amount'] = ii.qty * valuation_rate[0].valuation_rate
 			obj['selling_amount'] = ii.amount
-			obj['net_profit'] = ii.amount - buying_amount - i.discount_amount / total_qty - i.loyalty_amount / total_qty - i.total_taxes_and_charges / total_qty
+			obj['net_profit'] = ii.amount - buying_amount - i.discount_amount / total_qty - i.loyalty_amount
 			obj['gross_profit'] = ii.amount - buying_amount + i.discount_amount / total_qty + i.loyalty_amount / total_qty + i.total_taxes_and_charges / total_qty
 			if ii.amount > 0:
-				obj['net_profit_percentage'] = str(round((ii.amount - buying_amount - i.discount_amount / total_qty - i.loyalty_amount / total_qty - i.total_taxes_and_charges / total_qty) /  ii.amount  * 100,2)) + "%"
-
-				obj['gross_profit_percentage'] = str(round(((ii.amount - buying_amount + i.discount_amount / total_qty + i.loyalty_amount / total_qty + i.total_taxes_and_charges / total_qty) / ii.amount ) * 100,2)) + "%"
+				obj['net_profit_percentage'] = str(round((ii.amount - buying_amount - i.discount_amount / total_qty - i.loyalty_amount / total_qty) /  ii.buying_amount  * 100,2)) + "%"
+				# obj['gross_profit_percentage'] = str(round(((ii.amount - buying_amount + i.discount_amount / total_qty + i.loyalty_amount / total_qty + i.total_taxes_and_charges / total_qty) / ii.amount ) * 100,2)) + "%"
 			else:
-				obj['gross_profit_percentage'] = "0%"
+				# obj['gross_profit_percentage'] = "0%"
 				obj['net_profit_percentage'] = "0%"
 
 			data.append(obj)
