@@ -78,7 +78,6 @@ def execute(filters=None):
 		for idx,ii in enumerate(sales_invoice_items):
 			selling = frappe.db.sql(""" SELECT * FROM `tabItem Price` WHERE item_code=%s and selling=1 ORDER BY valid_from DESC """, ii.item_code, as_dict=1)
 			valuation_rate = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s """, ii.item_code, as_dict=1)
-
 			if idx != 0:
 				obj = {}
 			buying_amount =  valuation_rate[0].valuation_rate if len(valuation_rate) > 0 else ii.amount
@@ -89,9 +88,9 @@ def execute(filters=None):
 			obj['buying_amount'] = ii.qty * valuation_rate[0].valuation_rate
 			obj['selling_amount'] = ii.amount
 			obj['net_profit'] = ii.amount - buying_amount - i.discount_amount / total_qty - i.loyalty_amount
-			obj['gross_profit'] = ii.amount - buying_amount + i.discount_amount / total_qty + i.loyalty_amount / total_qty + i.total_taxes_and_charges / total_qty
+			# obj['gross_profit'] = ii.amount - buying_amount + i.discount_amount / total_qty + i.loyalty_amount / total_qty + i.total_taxes_and_charges / total_qty
 			if ii.amount > 0:
-				obj['net_profit_percentage'] = str(round((ii.amount - buying_amount - i.discount_amount / total_qty - i.loyalty_amount / total_qty) /  ii.buying_amount  * 100,2)) + "%"
+				obj['net_profit_percentage'] = str(round((ii.amount - buying_amount - i.discount_amount / total_qty - i.loyalty_amount / total_qty) /  buying_amount  * 100,2)) + "%"
 				# obj['gross_profit_percentage'] = str(round(((ii.amount - buying_amount + i.discount_amount / total_qty + i.loyalty_amount / total_qty + i.total_taxes_and_charges / total_qty) / ii.amount ) * 100,2)) + "%"
 			else:
 				# obj['gross_profit_percentage'] = "0%"
