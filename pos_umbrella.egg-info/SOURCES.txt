@@ -38,10 +38,6 @@ pos_umbrella/pos_umbrella/report/eod_report/__init__.py
 pos_umbrella/pos_umbrella/report/eod_report/eod_report.js
 pos_umbrella/pos_umbrella/report/eod_report/eod_report.json
 pos_umbrella/pos_umbrella/report/eod_report/eod_report.py
-pos_umbrella/pos_umbrella/report/eod_simple_report/__init__.py
-pos_umbrella/pos_umbrella/report/eod_simple_report/eod_simple_report.js
-pos_umbrella/pos_umbrella/report/eod_simple_report/eod_simple_report.json
-pos_umbrella/pos_umbrella/report/eod_simple_report/eod_simple_report.py
 pos_umbrella/pos_umbrella/report/management_report/__init__.py
 pos_umbrella/pos_umbrella/report/management_report/management_report.js
 pos_umbrella/pos_umbrella/report/management_report/management_report.json
