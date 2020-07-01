@@ -11,8 +11,8 @@ def get_data():
                 {
                     "type": "report",
                     "name": "EOD Report",
-                    "description": _("EOD Report"),
-                    "onboard": 1,
+                    "doctype": "Sales Invoice",
+                    "is_query_report": True,
                 },
 
             ]
