@@ -21,7 +21,7 @@ frappe.query_reports["EOD Report"] = {
 			"fieldname": "pos_profile",
 			"label": __("POS Profile"),
 			"fieldtype": "Link",
-			"options": "POS Profile"
+			"options": "POS Profile",
 			"reqd": 1
 		},
 		{
